@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
 
     @Upsert
-    suspend fun upsertTask(task: Task)
+    suspend fun upsertTask(task: Task): Long
 
     @Delete
     suspend fun deleteTask(task: Task)

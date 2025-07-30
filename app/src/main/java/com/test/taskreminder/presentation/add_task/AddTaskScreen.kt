@@ -1,5 +1,6 @@
 package com.test.taskreminder.presentation.add_task
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -24,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.test.taskreminder.R
 import com.test.taskreminder.presentation.add_task.components.TaskTextField
+import com.test.taskreminder.presentation.add_task.components.TimePickerDialog
 import com.test.taskreminder.ui.theme.DARK_GREEN
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -35,6 +40,22 @@ fun AddTaskScreen(
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    var timePickerState by remember {
+        mutableStateOf(false)
+    }
+
+    if (timePickerState) {
+        TimePickerDialog(
+            onConfirm = { hour, min ->
+                viewModel.setTime(hour, min)
+                timePickerState = false
+            },
+            onDismiss = {
+                timePickerState = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -53,9 +74,13 @@ fun AddTaskScreen(
                         painter = painterResource(R.drawable.ic_time),
                         "",
                         tint = Color.White,
-                        modifier = Modifier.padding(
-                            end = 8.dp
-                        )
+                        modifier = Modifier
+                            .padding(
+                                end = 8.dp
+                            )
+                            .clickable {
+                                timePickerState = true
+                            }
                     )
                 }
             )

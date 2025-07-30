@@ -1,8 +1,10 @@
 package com.test.taskreminder.presentation.add_task
 
+import android.icu.util.Calendar
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.taskreminder.data.local.Task
+import com.test.taskreminder.domain.repository.AlarmRepository
 import com.test.taskreminder.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +19,7 @@ data class AddTaskState(
 
 class AddTaskViewModel(
     private val repository: TaskRepository,
+    private val alarmRepository: AlarmRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AddTaskState())
@@ -39,10 +42,19 @@ class AddTaskViewModel(
         }
     }
 
-    fun setTime(time: Long) {
+    fun setTime(hour: Int, minute: Int) {
+        val calender = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+            if (before(Calendar.getInstance())) {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+        }
         _state.update {
             it.copy(
-                time = time
+                time = calender.timeInMillis
             )
         }
     }
@@ -54,7 +66,13 @@ class AddTaskViewModel(
                 description = _state.value.description,
                 time = _state.value.time
             )
-            repository.upsertTask(task)
+            val id = repository.upsertTask(task)
+            if (task.id == 0) {
+                val newTask = task.copy(
+                    id.toInt()
+                )
+                alarmRepository.schedule(newTask)
+            }
         }
     }
 }

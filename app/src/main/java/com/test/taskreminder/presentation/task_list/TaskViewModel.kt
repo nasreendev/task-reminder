@@ -3,6 +3,7 @@ package com.test.taskreminder.presentation.task_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.test.taskreminder.data.local.Task
+import com.test.taskreminder.domain.repository.AlarmRepository
 import com.test.taskreminder.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +17,7 @@ data class TaskState(
 
 class TaskViewModel(
     private val repository: TaskRepository,
+    private val alarmRepository: AlarmRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(TaskState())
@@ -28,6 +30,7 @@ class TaskViewModel(
     fun deleteTask(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task)
+            alarmRepository.cancel(task)
         }
     }
 

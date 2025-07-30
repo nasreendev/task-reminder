@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
 
-    suspend fun upsertTask(task: Task)
+    suspend fun upsertTask(task: Task): Long
 
     suspend fun deleteTask(task: Task)
 

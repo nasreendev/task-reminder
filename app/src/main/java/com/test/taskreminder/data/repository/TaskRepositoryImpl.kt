@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 class TaskRepositoryImpl(
     private val dao: TaskDao,
 ) : TaskRepository {
-    override suspend fun upsertTask(task: Task) {
-        dao.upsertTask(task)
+    override suspend fun upsertTask(task: Task): Long {
+       return dao.upsertTask(task)
     }
 
     override suspend fun deleteTask(task: Task) {

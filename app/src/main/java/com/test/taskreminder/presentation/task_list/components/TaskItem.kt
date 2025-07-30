@@ -23,6 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.test.taskreminder.data.local.Task
 import com.test.taskreminder.ui.theme.DARK_GREEN
 import com.test.taskreminder.ui.theme.LIGHT_SOFT_GREEN
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun TaskItem(
@@ -48,7 +51,7 @@ fun TaskItem(
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "${task.time}",
+                    text = "${convertMillisToTime(task.time)}",
                     style = MaterialTheme.typography.bodyMedium.copy(Color.DarkGray)
                 )
             }
@@ -57,8 +60,13 @@ fun TaskItem(
                 contentDescription = "",
                 tint = DARK_GREEN,
                 modifier = Modifier.clickable {
-                        onDeleteClick.invoke()
-                    })
+                    onDeleteClick.invoke()
+                })
         }
     }
+}
+
+fun convertMillisToTime(millis: Long): String {
+    val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    return formatter.format(Date(millis))
 }

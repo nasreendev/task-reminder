@@ -2,7 +2,9 @@ package com.test.taskreminder.di
 
 import com.test.taskreminder.data.local.TaskDao
 import com.test.taskreminder.data.local.TaskDataBase
+import com.test.taskreminder.data.repository.AlarmRepositoryImpl
 import com.test.taskreminder.data.repository.TaskRepositoryImpl
+import com.test.taskreminder.domain.repository.AlarmRepository
 import com.test.taskreminder.domain.repository.TaskRepository
 import com.test.taskreminder.presentation.add_task.AddTaskViewModel
 import com.test.taskreminder.presentation.task_list.TaskViewModel
@@ -21,6 +23,9 @@ val appModule = module {
     viewModelOf(::AddTaskViewModel)
     viewModelOf(::TaskViewModel)
 
+    singleOf(::AlarmRepositoryImpl){
+        bind<AlarmRepository>()
+    }
     single {
         TaskDataBase.getInstance(get())
     }
